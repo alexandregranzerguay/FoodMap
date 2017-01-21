@@ -1,9 +1,50 @@
 import requests
 import json
 import time
-
+with open("gkey") as f:
+	apikey=f.readlines()[0]
+with open("ckey") as f:
+	cogapikey=f.readlines()[0]
+	
+print apikey
 locationCentre = "45.4581,-73.6403" # where you are...
-apikey = raw_input("enter api key: ")
+# apikey = raw_input("enter google api key: ")
+# cogapikey = raw_input("enter Microsoft cognitive api key:")
+
+
+def getScores(review_txt_array):
+	url = "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment"
+	
+	querystring = {"Subscription-Key":cogapikey,"Content-Type":"application/json"}
+	
+	payload = {}
+	payload['documents'] = []
+	count = 0
+	for review in review_txt_array:
+		count += 1
+		if review['text'] != "":
+			payload['documents'].append({"language": "en","id": count,"text": review['text']})
+	headers = {
+	    'content-type': "application/json",
+	    'cache-control': "no-cache",
+	    'postman-token': "537d56b3-44de-0032-1e7a-24090d541050"
+	    }
+	
+	
+	response = requests.request("POST", url, data=json.dumps(payload), headers=headers, params=querystring)
+	res = json.loads(response.text)
+	
+	count = 0
+	score = 0
+	for index in res['documents']:
+		score += index['score']
+		count += 1
+	print "**************"
+	print score/count
+	print "**************"
+	
+	# print(response.text)
+	return
 
 def getReviews(place_id):
 	url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -16,7 +57,13 @@ def getReviews(place_id):
 	if ('reviews' in res['result']):
 		for review in res['result']['reviews']:
 			print review['text']
+		
+		getScores(res['result']['reviews'])
+		
 	return
+
+
+
 
 
 # retrieve places nearby (narrowed down to restaurants in 1km radius)
@@ -33,6 +80,7 @@ res = json.loads(response.text)
 
 # we have the place. now we have to extract information from the place and send another api request to get the reviews
 for restaurant in res['results']:
+	print "_________________"
 	print restaurant['name']
 	print restaurant['place_id']
 	getReviews(restaurant['place_id'])
