@@ -12,17 +12,18 @@ locationCentre = "45.4581,-73.6403" # where you are...
 # cogapikey = raw_input("enter Microsoft cognitive api key:")
 
 
-def getScores(review_txt1, review_txt2, review_txt3):
+def getScores(review_txt_array):
 	url = "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment"
 	
 	querystring = {"Subscription-Key":cogapikey,"Content-Type":"application/json"}
 	
 	payload = {}
 	payload['documents'] = []
-	payload['documents'].append({"language": "en","id": "1","text": review_txt1})
-	payload['documents'].append({"language": "en","id": "2","text": review_txt2})
-	payload['documents'].append({"language": "en","id": "3","text": review_txt3})
-	print payload
+	count = 0
+	for review in review_txt_array:
+		count += 1
+		if review['text'] != "":
+			payload['documents'].append({"language": "en","id": count,"text": review['text']})
 	headers = {
 	    'content-type': "application/json",
 	    'cache-control': "no-cache",
@@ -35,12 +36,12 @@ def getScores(review_txt1, review_txt2, review_txt3):
 	
 	count = 0
 	score = 0
-	print res
-	print payload
 	for index in res['documents']:
 		score += index['score']
 		count += 1
+	print "**************"
 	print score/count
+	print "**************"
 	
 	# print(response.text)
 	return
@@ -56,8 +57,9 @@ def getReviews(place_id):
 	if ('reviews' in res['result']):
 		for review in res['result']['reviews']:
 			print review['text']
-		if len(res['result']['reviews'])==3:
-			getScores(res['result']['reviews'][0]['text'],res['result']['reviews'][1]['text'],res['result']['reviews'][2]['text'])
+		
+		getScores(res['result']['reviews'])
+		
 	return
 
 
@@ -78,6 +80,7 @@ res = json.loads(response.text)
 
 # we have the place. now we have to extract information from the place and send another api request to get the reviews
 for restaurant in res['results']:
+	print "_________________"
 	print restaurant['name']
 	print restaurant['place_id']
 	getReviews(restaurant['place_id'])
