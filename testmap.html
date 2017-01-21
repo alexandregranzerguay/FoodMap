@@ -41,6 +41,10 @@
             icon: getMarker(magnitude)
           };
         });
+        google.maps.event.addListener(icon, 'click', function() {
+              //DO A THING HERE!! yaaaaaaaaaaaaaaaaaaayidkjavascript
+            });
+
       }
 
       function getMarker(magnitude) {
@@ -55,7 +59,7 @@
           path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
           fillColor: Color,
           fillOpacity: .7,
-          scale: 4,
+          scale: 5,
           strokeColor: 'white',
           strokeWeight: .5
         };
