@@ -17,13 +17,20 @@ def getScores(review_txt1, review_txt2, review_txt3):
 	
 	querystring = {"Subscription-Key":cogapikey,"Content-Type":"application/json"}
 	
-	payload = " {\r\n     \"documents\": [\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"1\",\r\n             \"text\": review_txt2\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"2\",\r\n             \"text\": review_txt1\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"3\",\r\n             \"text\": review_txt3\r\n         }\r\n     ]\r\n }"
+	payload = {}
+	payload['documents'] = []
+	payload['documents'].append({"language": "en","id": "1","text": review_txt1})
+	payload['documents'].append({"language": "en","id": "2","text": review_txt2})
+	payload['documents'].append({"language": "en","id": "3","text": review_txt3})
+	print payload
+	headers = {
 	    'content-type': "application/json",
 	    'cache-control': "no-cache",
 	    'postman-token': "537d56b3-44de-0032-1e7a-24090d541050"
 	    }
 	
-	response = requests.request("POST", url, data=json.loads(payload), headers=headers, params=querystring)
+	
+	response = requests.request("POST", url, data=json.dumps(payload), headers=headers, params=querystring)
 	res = json.loads(response.text)
 	
 	count = 0
