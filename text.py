@@ -2,8 +2,9 @@ import requests
 import json
 
 url = "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment"
+apikey = raw_input("enter the api key:")
 
-querystring = {"Subscription-Key":"208ff17014d542d9aa453b82e172ec9c","Content-Type":"application/json"}
+querystring = {"Subscription-Key":apikey,"Content-Type":"application/json"}
 
 payload = " {\r\n     \"documents\": [\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"1\",\r\n             \"text\": \"the food was alright at this restaurant\"\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"2\",\r\n             \"text\": \"Final document\"\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"3\",\r\n             \"text\": \"Final document\"\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"4\",\r\n             \"text\": \"Final document\"\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"5\",\r\n             \"text\": \"Final document\"\r\n         }\r\n     ]\r\n }"
 headers = {
