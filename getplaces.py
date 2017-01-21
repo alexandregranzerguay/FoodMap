@@ -1,9 +1,42 @@
 import requests
 import json
 import time
-
+with open("gkey") as f:
+	apikey=f.readlines()[0]
+with open("ckey") as f:
+	cogapikey=f.readlines()[0]
+	
+print apikey
 locationCentre = "45.4581,-73.6403" # where you are...
-apikey = raw_input("enter api key: ")
+# apikey = raw_input("enter google api key: ")
+# cogapikey = raw_input("enter Microsoft cognitive api key:")
+
+
+def getScores(review_txt1, review_txt2, review_txt3):
+	url = "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment"
+	
+	querystring = {"Subscription-Key":cogapikey,"Content-Type":"application/json"}
+	
+	payload = " {\r\n     \"documents\": [\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"1\",\r\n             \"text\": review_txt2\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"2\",\r\n             \"text\": review_txt1\r\n         },\r\n         {\r\n             \"language\": \"en\",\r\n             \"id\": \"3\",\r\n             \"text\": review_txt3\r\n         }\r\n     ]\r\n }"
+	    'content-type': "application/json",
+	    'cache-control': "no-cache",
+	    'postman-token': "537d56b3-44de-0032-1e7a-24090d541050"
+	    }
+	
+	response = requests.request("POST", url, data=json.loads(payload), headers=headers, params=querystring)
+	res = json.loads(response.text)
+	
+	count = 0
+	score = 0
+	print res
+	print payload
+	for index in res['documents']:
+		score += index['score']
+		count += 1
+	print score/count
+	
+	# print(response.text)
+	return
 
 def getReviews(place_id):
 	url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -16,7 +49,12 @@ def getReviews(place_id):
 	if ('reviews' in res['result']):
 		for review in res['result']['reviews']:
 			print review['text']
+		if len(res['result']['reviews'])==3:
+			getScores(res['result']['reviews'][0]['text'],res['result']['reviews'][1]['text'],res['result']['reviews'][2]['text'])
 	return
+
+
+
 
 
 # retrieve places nearby (narrowed down to restaurants in 1km radius)
