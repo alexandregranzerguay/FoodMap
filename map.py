@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-from geojson import Feature, Point, FeatureCollection
 import sqlite3
 import os
 app = Flask(__name__)

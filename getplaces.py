@@ -2,7 +2,9 @@ import requests
 import json
 import time
 import sqlite3
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 with open("gkey") as f:
 	apikey=f.readlines()[0]
@@ -14,8 +16,7 @@ with open("ckey") as f:
 db = sqlite3.connect('conuhacks')
 db.cursor()
 	
-print apikey
-locationCentre = "45.4581,-73.6403" # where you are...
+locationCentre = "45.4928131,-73.5781163" # where you are...
 # apikey = raw_input("enter google api key: ")
 # cogapikey = raw_input("enter Microsoft cognitive api key:")
 
@@ -44,16 +45,17 @@ def getScores(review_txt_array):
 	
 	count = 0
 	score = 0
-	for index in res['documents']:
-		score += index['score']
-		count += 1
-	print "**************"
-	print score/count
-	print "**************"
-	
-	# print(response.text)
-	return (score/count)
-
+	if ('documents' in res):
+		for index in res['documents']:
+			score += index['score']
+			count += 1
+		print "**************"
+		print score/count
+		print "**************"
+		
+		# print(response.text)
+		return (score/count)
+	return 0
 def getReviews(place_id):
 	url = "https://maps.googleapis.com/maps/api/place/details/json"
 
@@ -61,7 +63,7 @@ def getReviews(place_id):
 
 	response = requests.request("GET", url, params=querystring)
 	res = json.loads(response.text)
-
+	
 	if ('reviews' in res['result']):
 		for review in res['result']['reviews']:
 			print review['text']
