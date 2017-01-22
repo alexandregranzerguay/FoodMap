@@ -87,7 +87,7 @@ $('body').on('click', function(){
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 100%;
+        height: 90%;
         width: 90%;
         float: right;
       }
@@ -362,59 +362,66 @@ button:hover {
     </style>
   </head>
   <body>
-    <div id="floating-wrapper">
-    <button class="js-menu menu" type="button">
-        <span class="bar"></span>
-    </button>
-    <nav>
-        <ul>
-            <li id="filter">Filters</li>
-            <li>Link2</li>s
-            <li>Link3</li>
-            <li>Your Profile</li>
-        </ul>
-    </nav>
+    <!--<div id="floating-wrapper">-->
+    <!--<button class="js-menu menu" type="button">-->
+    <!--    <span class="bar"></span>-->
+    <!--</button>-->
+    <!--<nav>-->
+    <!--    <ul>-->
+    <!--        <li id="filter">Filters</li>-->
+    <!--        <li>Link2</li>s-->
+    <!--        <li>Link3</li>-->
+    <!--        <li>Your Profile</li>-->
+    <!--    </ul>-->
+    <!--</nav>-->
     
-    <div class="filter-pop-up">
-        <div class="header">
-            <div class="title">Filters</div><img class="close" src="/static/close-button.png">
-        </div>
-        <div class="content">
-           <form>
-                <select name="Type">
-                <option value="all">All</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="bar">Bar</option>
-                <option value="takeout">Takeout</option>
-                </select>
-                <br><br>
+    <!--<div class="filter-pop-up">-->
+    <!--    <div class="header">-->
+    <!--        <div class="title">Filters</div><img class="close" src="/static/close-button.png">-->
+    <!--    </div>-->
+    <!--    <div class="content">-->
+    <!--       <form>-->
+    <!--            <select name="Type">-->
+    <!--            <option value="all">All</option>-->
+    <!--            <option value="restaurant">Restaurant</option>-->
+    <!--            <option value="bar">Bar</option>-->
+    <!--            <option value="takeout">Takeout</option>-->
+    <!--            </select>-->
+    <!--            <br><br>-->
           
-                <div class="slider-container">
-                <label class="amount">Distance:</label>
-                <input class="slider-input" id="distance-input" readonly value="0 km" name="distance_question" />
-                </div>
-                <div class="slider" id="distance"></div>
-                <br/>
+    <!--            <div class="slider-container">-->
+    <!--            <label class="amount">Distance:</label>-->
+    <!--            <input class="slider-input" id="distance-input" readonly value="0 km" name="distance_question" />-->
+    <!--            </div>-->
+    <!--            <div class="slider" id="distance"></div>-->
+    <!--            <br/>-->
                 
                 
-                <div class="slider-container">
-                <label class="amount">Price:</label>
-                <input class="slider-input" id="price-input" readonly value="$0" name="price_question"/>
-                </div>
-                <div class="slider" id="price"></div>
-                <br/>
-                <input type="submit" value="Submit" />
-            </form>
+    <!--            <div class="slider-container">-->
+    <!--            <label class="amount">Price:</label>-->
+    <!--            <input class="slider-input" id="price-input" readonly value="$0" name="price_question"/>-->
+    <!--            </div>-->
+    <!--            <div class="slider" id="price"></div>-->
+    <!--            <br/>-->
+    <!--            <input type="submit" value="Submit" />-->
+    <!--        </form>-->
        
             
-        </div>
-          <div class="footer">
-            <button type="submit" id="save-changes">Save Changes</button><button id="reset">Reset All Filters</button>
-        </div>
-    </div>
-    </div>
+    <!--    </div>-->
+    <!--      <div class="footer">-->
+    <!--        <button type="submit" id="save-changes">Save Changes</button><button id="reset">Reset All Filters</button>-->
+    <!--    </div>-->
+    <!--</div>-->
+    <!--</div>-->
     <!--<div style="height:200px;"></div>-->
     <div id="map"></div>
+    <!--<br>-->
+    <!--Scan new area-->
+    <!--<br>lat-->
+    <!--<input type="number" name="lat">-->
+    <!--<br>lng-->
+    <!--<input type="number" name="lng">-->
+    <!--<input type="submit">-->
   </body>
 
     <script>
