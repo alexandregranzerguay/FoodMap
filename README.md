@@ -1,4 +1,4 @@
-# ConUHacks II - 
+# ConUHacks II - January 21-22, 2017
 
 Our team noticed a problem with the way restaurants are discovered online. Typically, numeric ratings are just arbitrary numbers (what does a 4 out of 5 really mean??), and there are way too many text reviews to read them all. So our question was: how can we more intelligently compare restaurants to one another, and give restaurant-goers more meaningful numeric ratings?
 
