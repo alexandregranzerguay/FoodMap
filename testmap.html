@@ -23,11 +23,17 @@
     <div id="map"></div>
     <script>
       var map;
+
+      // Create the map
       function initMap() {
+        var montreal = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 15,
-          center: {lat: 45.4928131, lng: -73.5781163}
+          center: montreal
         });
+
+        // InfoWindow will show the results when you click on a marker
+        infowindow = new google.maps.InfoWindow();
 
         // Create a <script> tag and set the USGS URL as the source.
         var script = document.createElement('script');
@@ -35,27 +41,29 @@
         // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
         script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
         document.getElementsByTagName('head')[0].appendChild(script);
-		map.data.setStyle(function(feature) {
+		    map.data.setStyle(function(feature) {
           var magnitude = feature.getProperty('mag');
           return {
             icon: getMarker(magnitude)
           };
         });
         google.maps.event.addListener(icon, 'click', function() {
-              //DO A THING HERE!! yaaaaaaaaaaaaaaaaaaayidkjavascript
+              // add the info window here
             });
 
       }
 
-      function getMarker(magnitude) {
-	  if (magnitude < 3)
-	  var Color = 'LightGreen';
-	  else
-	  if (magnitude > 3 && magnitude < 5)
-	  var Color = 'Yellow';
-	  else
-	  var Color = 'red';
+    function getMarker(magnitude) {
+      // sample color changing code currently depending on magnitude
+	    if (magnitude < 3)
+	       var Color = 'LightGreen';
+	    else
+	     if (magnitude > 3 && magnitude < 5)
+	      var Color = 'Yellow';
+	    else
+	     var Color = 'red';
         return {
+          // draw the icon
           path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
           fillColor: Color,
           fillOpacity: .7,
