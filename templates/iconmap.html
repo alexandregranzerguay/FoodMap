@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"></meta>
+    <meta charset="utf-8"></meta>
+    <title>Test map</title>
+
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+ function initMap() {
+        var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
+        var myObject = {{ objects|tojson|safe }}
+        myLatLngArray = []
+        for (i = 0; i < myObject['places'].length; i++){
+          // console.log(myObject['places'][i])
+          latlngElement = [{lat: myObject['places'][i]['lat'], lng: myObject['places'][i]['lng']},
+                          {name: myObject['places'][i]['name'], rating: myObject['places'][i]['rating']}]
+          myLatLngArray.push(latlngElement)
+        }
+        console.log(myObject)
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: myLatLng
+        });
+        
+        // InfoWindow will show the results when you click on a marker
+        infowindow = new google.maps.InfoWindow();
+       
+        for(i = 0; i <myLatLngArray.length; i++){
+          myRating = myLatLngArray[i][1]['rating']
+          if (myRating>0.8){
+            // arrow = '/static/arrowgreen.png'
+            arrow = {
+                url: "/static/arrowgreen.png", // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+            };
+          }
+          else if (myRating>0.6){
+            arrow = {
+                url: "/static/arrowyellow.png", // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+            };
+          }
+          else if (myRating>0.35){
+            arrow = {
+                url: "/static/arroworange.png", // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+            };
+          }
+          else
+            arrow = {
+                url: "/static/arrowred.png", // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+            };
+          var marker = new google.maps.Marker({
+            position: myLatLngArray[i][0],
+            map: map,
+            icon: arrow, 
+            title: myLatLngArray[i][1]['name']
+          });
+        }
+        google.maps.event.addListener(marker, 'click', function() {
+             // add the info window here
+            infowindow.setContent("test");
+            infowindow.open(map, this);
+});
+      }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&callback=initMap">
+    </script>
+  </body>
+</html>

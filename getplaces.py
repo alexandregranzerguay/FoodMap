@@ -8,8 +8,7 @@ with open("gkey") as f:
 	apikey=f.readlines()[0]
 with open("ckey") as f:
 	cogapikey=f.readlines()[0]
-with open("dbpwd") as f:
-	mysql_password=f.readlines()[0]
+
 
 
 db = sqlite3.connect('conuhacks')
