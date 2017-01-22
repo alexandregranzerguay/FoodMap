@@ -4,26 +4,421 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"></meta>
     <meta charset="utf-8"></meta>
     <title>Test map</title>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+    
+      //Hamburger Menu
+$('.js-menu').on('click', function() {
+	if ($('body').hasClass('menu-open')) {
+		$(this).removeClass('active');
+		$('body').removeClass('menu-open');
+	} else {
+		$(this).addClass('active');
+		$('body').addClass('menu-open');
+	}
+});
+
+/* Filter Pop Up JS */
+
+$('#filter').on('click', function(){
+    //close hamburger menu
+    $('.js-menu').removeClass('active');
+    $('body').removeClass('menu-open');
+    //Open filter pop-up
+    //$('body').addClass('filter-open');
+    $('.filter-pop-up').addClass('active');
+});
+
+//Close popup on button click
+$('.close').on('click', function(){
+    $('.filter-pop-up').removeClass('active');
+});
+
+//Close popup when save changes button is clicked
+$('#save-changes').on('click', function(){
+    $('.filter-pop-up').removeClass('active');
+});
+
+/* Slider JS */
+//Setup distance slider
+$("#distance").slider({
+    step: 1,
+    min: 0,
+    max: 10,
+    value: 0,
+    slide: function(event, ui) {
+        $("input[name=" + $(this).attr("id") + "_question]").val(ui.value +" km");
+    }
+});
+
+//Setup price slider
+$("#price").slider({
+    step: 1,
+    min: 0,
+    max: 50,
+    value: 0,
+    slide: function(event, ui) {
+        $("input[name=" + $(this).attr("id") + "_question]").val("$" + ui.value);
+    }
+});
+
+
+//Reset slider positions and values on button click
+$('#reset').on('click', function(){
+    $(".slider").slider("value", 0);
+    $("#distance-input").val("0 km");
+    $("#price-input").val("$0");
+});
+
+$('body').on('click', function(){
+    console.log('clicked');
+    if($('.filter-pop-up').hasClass('acive')){
+        console.log('filter open');
+        $('.filter-pop-up').removeClass('active');
+    }
+});
+
+
+    </script>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
         height: 100%;
+        width: 90%;
+        float: right;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
         margin: 0;
         padding: 0;
+        font-size: 10px;
+        font-family: "Avenir Next", "Avenir", sans-serif;
+
       }
+
+
+/* -------- Hamburger Menu -------------- */
+
+.menu {
+    -webkit-transition: 0.1s -webkit-transform linear;
+    transition: 0.1s -webkit-transform linear;
+    transition: 0.1s transform linear;
+    transition: 0.1s transform linear, 0.1s -webkit-transform linear;
+    position: relative;
+    background: 0;
+    float: left;
+    margin: 2rem;
+    height: 2.7rem;
+    width: 3.5rem;
+    z-index: 1;
+    outline: 0;
+    padding: 0;
+    border: 0;
+}
+
+.menu:hover{
+    color: black;
+    box-shadow: none;
+}
+
+.bar,
+.bar::before,
+.bar::after {
+    -webkit-transition: 0.2s background linear 0.1s, 0.2s top linear 0.2s, 0.2s -webkit-transform linear;
+    transition: 0.2s background linear 0.1s, 0.2s top linear 0.2s, 0.2s -webkit-transform linear;
+    transition: 0.2s background linear 0.1s, 0.2s top linear 0.2s, 0.2s transform linear;
+    transition: 0.2s background linear 0.1s, 0.2s top linear 0.2s, 0.2s transform linear, 0.2s -webkit-transform linear;
+    position: absolute;
+    background: #000;
+    margin: auto;
+    width: 100%;
+    height: 0.3rem;
+    content: '';
+    top: 50%;
+    left: 0;
+}
+
+.bar {
+    margin-top: -0.2rem;
+}
+
+.bar::before {
+    top: -1.2rem;
+}
+
+.bar::after {
+    top: 1.2rem;
+}
+
+.bar::before,
+.bar::after {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.active .bar {
+    background: 0;
+}
+
+.active .bar::before {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.active .bar::after {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.active .bar::before,
+.active .bar::after {
+    top: 0;
+}
+
+.active .bar,
+.active .bar::before,
+.active .bar::after {
+    -webkit-transition: 0.2s background linear 0.1s, 0.2s top linear, 0.2s -webkit-transform linear 0.2s;
+    transition: 0.2s background linear 0.1s, 0.2s top linear, 0.2s -webkit-transform linear 0.2s;
+    transition: 0.2s background linear 0.1s, 0.2s top linear, 0.2s transform linear 0.2s;
+    transition: 0.2s background linear 0.1s, 0.2s top linear, 0.2s transform linear 0.2s, 0.2s -webkit-transform linear 0.2s;
+}
+
+nav {
+    width: 250px;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    position: fixed;
+    -webkit-transform: translateX(-250px);
+    transform: translateX(-250px);
+    -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.56, 0.1, 0.34, 0.91);
+    transition: -webkit-transform 0.6s cubic-bezier(0.56, 0.1, 0.34, 0.91);
+    transition: transform 0.6s cubic-bezier(0.56, 0.1, 0.34, 0.91);
+    transition: transform 0.6s cubic-bezier(0.56, 0.1, 0.34, 0.91), -webkit-transform 0.6s cubic-bezier(0.56, 0.1, 0.34, 0.91);
+    padding-top: 6.2rem;
+}
+
+.menu-open nav {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+
+nav ul {
+    text-align: center;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    padding: 20px 5px;
+    font-size: 2rem;
+}
+
+nav ul li:hover {    
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #FFF;
+    cursor: pointer;
+}
+
+
+/* ---------- End of Hamburger Menu ------------ */
+
+#floating-wrapper{
+    position: absolute;
+    z-index: 5;
+}
+
+/* ----------- Filter Menu Styles ---------------- */
+
+.filter-pop-up{
+    position:fixed;
+    color: #FFF;
+    top:30%;
+    left:30%;
+    width:40%;
+    height: 40%;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.5s linear;
+    opacity: 0;
+    visibility: none;
+    border-radius: 10px;
+    -webkit-box-shadow: 3px 4px 5px 0px rgba(50, 50, 50, 0.24);
+    -moz-box-shadow:    3px 4px 5px 0px rgba(50, 50, 50, 0.24);
+    box-shadow:         3px 4px 5px 0px rgba(50, 50, 50, 0.24);
+}
+
+.filter-pop-up.active{
+    display: block;
+    opacity: 1;
+}
+
+.filter-pop-up .header{
+    padding: 5px;
+}
+
+.filter-pop-up .title{
+    font-size: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+.filter-pop-up .close{
+    width: 25px;
+    height: 25px;
+    float: right;
+}
+
+
+.filter-pop-up .content{
+    display: block;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    color: #FFF;
+}
+
+.filter-pop-up .content label{
+    font-size: 14px;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+
+}
+
+.filter-pop-up .content input{
+    font-size: 14px;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    
+}
+
+.filter-pop-up .footer{
+    margin-top: 20px;
+}
+
+.slider-input{
+    border:0; 
+    background-color:gray;
+    color: #FFF;
+}
+
+.slider-container{
+    width: 50%;
+    text-align: left;
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.slider{
+    width: 50%;
+    left: 25%;
+}
+
+#reset{
+    margin-left: 20px;
+}
+
+.ui-state-hover{
+    background: tomato
+}
+
+ui-widget-content .ui-state-active{
+    background: #f6f6f6;
+}
+
+
+.ui-state-focus{
+    background: red;
+    
+}
+
+button{
+    background-color: transparent;
+    font-size: 14px;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    color: #FFF;
+    height: 50px;
+    width: 40%;
+    border: 1px solid #FFF;
+
+    -webkit-transition: all 0.25s ease-in;
+    -moz-transition: all 0.25s ease-in;
+    -ms-transition: all 0.25s ease-in;
+    -o-transition: all 0.25s ease-in;
+    transition: all 0.25s ease-in;
+}
+    
+   
+
+button:hover {
+	color: rgba(0, 0, 0, 0.5);
+	box-shadow: #FFF 0 0px 0px 40px inset;
+    cursor: pointer;
+}
     </style>
   </head>
   <body>
+    <div id="floating-wrapper">
+    <button class="js-menu menu" type="button">
+        <span class="bar"></span>
+    </button>
+    <nav>
+        <ul>
+            <li id="filter">Filters</li>
+            <li>Link2</li>s
+            <li>Link3</li>
+            <li>Your Profile</li>
+        </ul>
+    </nav>
+    
+    <div class="filter-pop-up">
+        <div class="header">
+            <div class="title">Filters</div><img class="close" src="/static/close-button.png">
+        </div>
+        <div class="content">
+           <form>
+                <select name="Type">
+                <option value="all">All</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="bar">Bar</option>
+                <option value="takeout">Takeout</option>
+                </select>
+                <br><br>
+          
+                <div class="slider-container">
+                <label class="amount">Distance:</label>
+                <input class="slider-input" id="distance-input" readonly value="0 km" name="distance_question" />
+                </div>
+                <div class="slider" id="distance"></div>
+                <br/>
+                
+                
+                <div class="slider-container">
+                <label class="amount">Price:</label>
+                <input class="slider-input" id="price-input" readonly value="$0" name="price_question"/>
+                </div>
+                <div class="slider" id="price"></div>
+                <br/>
+                <input type="submit" value="Submit" />
+            </form>
+       
+            
+        </div>
+          <div class="footer">
+            <button type="submit" id="save-changes">Save Changes</button><button id="reset">Reset All Filters</button>
+        </div>
+    </div>
+    </div>
+    <!--<div style="height:200px;"></div>-->
     <div id="map"></div>
+  </body>
+
     <script>
- function initMap() {
-        var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
+    var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
         var myObject = {{ objects|tojson|safe }}
         myLatLngArray = []
         for (i = 0; i < myObject['places'].length; i++){
@@ -32,6 +427,16 @@
                           {name: myObject['places'][i]['name'], rating: myObject['places'][i]['rating']}]
           myLatLngArray.push(latlngElement)
         }
+ function initMap() {
+        // var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
+        // var myObject = {{ objects|tojson|safe }}
+        // myLatLngArray = []
+        // for (i = 0; i < myObject['places'].length; i++){
+        //   // console.log(myObject['places'][i])
+        //   latlngElement = [{lat: myObject['places'][i]['lat'], lng: myObject['places'][i]['lng']},
+        //                   {name: myObject['places'][i]['name'], rating: myObject['places'][i]['rating']}]
+        //   myLatLngArray.push(latlngElement)
+        // }
         console.log(myObject)
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 15,
@@ -336,7 +741,8 @@
         
         // InfoWindow will show the results when you click on a marker
         infowindow = new google.maps.InfoWindow();
-       
+        // heatmap data array
+       //var heatmapData = [];
         for(i = 0; i <myLatLngArray.length; i++){
           myRating = myLatLngArray[i][1]['rating']
           if (myRating>0.8){
@@ -375,19 +781,44 @@
             position: myLatLngArray[i][0],
             map: map,
             icon: arrow, 
-            title: myLatLngArray[i][1]['name']
+            title: myLatLngArray[i][1]['name'],
+            rating: myLatLngArray[i][1]['rating']
           });
-        }
-        google.maps.event.addListener(marker, 'click', function() {
+          // Push coordinates to heatmap
+        //   var latLng = new google.maps.LatLng(myLatLngArray[i][0]['lat'], myLatLngArray[i][0]['lng']);
+        //  heatmapData.push(latLng);
+          google.maps.event.addListener(marker, 'click', function() {
              // add the info window here
-            infowindow.setContent("test");
+            infowindow.setContent(this.title+'<br>Rating: '+(parseFloat(this.rating)*100).toFixed(2)+'%');
             infowindow.open(map, this);
         });
+        }
+        // plot heatmap
+        // if
+        // var heatmap = new google.maps.visualization.HeatmapLayer({
+        //     data: heatmapData,
+        //     dissipating: false,
+        //     map: map
+        // });
       }
-
+// function eqfeed_callback(myLatLngArray) {
+//         var heatmapData = [];
+//         for (var i = 0; i < myLatLngArray.length; i++) {
+//           var latLng = new google.maps.LatLng(myLatLngArray[i][0]['lat'], myLatLngArray[i][0]['lng']);
+//             heatmapData.push(latLng);
+//         }
+//         var heatmap = new google.maps.visualization.HeatmapLayer({
+//           data: heatmapData,
+//           dissipating: false,
+//           map: map
+//         });
+//       }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&callback=initMap">
+        //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&libraries=visualization&callback=initMap">
+// IMPORTANT need ^libraries visualize in the above URL to do heatmaps
+//src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&callback=initMap">
+    
     </script>
-  </body>
+     
 </html>
