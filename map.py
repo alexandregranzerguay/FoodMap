@@ -1,7 +1,24 @@
 from flask import Flask, render_template
 import sqlite3
 import os
+import subprocess
 app = Flask(__name__)
+
+
+@app.route('/scan')
+def scan(latlng):
+    subprocess.call(["/getplaces.py", latlng])
+    # return render_template('testmap.html')
+    db = sqlite3.connect('conuhacks')
+    db.cursor()
+    data = db.execute ('select lat,lon,name,avg_sentiment_score from places')
+    myobject = {}
+    myobject['places'] = []
+    for rows in data:
+        myelement = {"lat":rows[0], "lng":rows[1], "name":rows[2],"rating":rows[3]}
+        myobject['places'].append(myelement)
+    return render_template('iconmap.html', objects=myobject)
+
 
 @app.route('/')
 def hello_world():

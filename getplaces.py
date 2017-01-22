@@ -6,6 +6,10 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+location_arg = str(sys.argv[1]) #"45.4928131,-73.5781163"
+
+	
+
 with open("gkey") as f:
 	apikey=f.readlines()[0]
 with open("ckey") as f:
@@ -16,7 +20,7 @@ with open("ckey") as f:
 db = sqlite3.connect('conuhacks')
 db.cursor()
 	
-locationCentre = "45.4928131,-73.5781163" # where you are...
+locationCentre = location_arg#"45.4928131,-73.5781163" # where you are...
 # apikey = raw_input("enter google api key: ")
 # cogapikey = raw_input("enter Microsoft cognitive api key:")
 
