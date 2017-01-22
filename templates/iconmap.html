@@ -39,6 +39,7 @@ $('.close').on('click', function(){
 
 //Close popup when save changes button is clicked
 $('#save-changes').on('click', function(){
+    console.log('here');
     $('.filter-pop-up').removeClass('active');
 });
 
@@ -87,7 +88,7 @@ $('body').on('click', function(){
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 90%;
+        height: 100%;
         width: 90%;
         float: right;
       }
@@ -233,6 +234,8 @@ nav ul li:hover {
 #floating-wrapper{
     position: absolute;
     z-index: 5;
+    width: 10%;
+    text-align: center;
 }
 
 /* ----------- Filter Menu Styles ---------------- */
@@ -300,9 +303,11 @@ nav ul li:hover {
 }
 
 .slider-input{
-    border:0; 
-    background-color:gray;
-    color: #FFF;
+    border: 0;
+    background-color: white;
+    color: gray;
+    display: inline;
+    width: 50px;
 }
 
 .slider-container{
@@ -319,7 +324,7 @@ nav ul li:hover {
 }
 
 #reset{
-    margin-left: 20px;
+    margin-left: 5px;
 }
 
 .ui-state-hover{
@@ -340,10 +345,10 @@ button{
     background-color: transparent;
     font-size: 14px;
     font-family: "Avenir Next", "Avenir", sans-serif;
-    color: #FFF;
+    color: rgba(0, 0, 0, 0.5);
     height: 50px;
     width: 40%;
-    border: 1px solid #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.5);
 
     -webkit-transition: all 0.25s ease-in;
     -moz-transition: all 0.25s ease-in;
@@ -355,17 +360,51 @@ button{
    
 
 button:hover {
-	color: rgba(0, 0, 0, 0.5);
-	box-shadow: #FFF 0 0px 0px 40px inset;
+	color: #FFF;
+	box-shadow: rgba(0, 0, 0, 0.5) 0 0px 0px 40px inset;
     cursor: pointer;
 }
     </style>
   </head>
   <body>
-    <!--<div id="floating-wrapper">-->
-    <!--<button class="js-menu menu" type="button">-->
-    <!--    <span class="bar"></span>-->
-    <!--</button>-->
+    <div id="floating-wrapper">
+    <button class="js-menu menu" type="button">
+        <span class="bar"></span>
+    </button>
+    
+    <div class="content">
+           <form>
+                <select name="Type">
+                <option value="all">All</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="bar">Bar</option>
+                <option value="takeout">Takeout</option>
+                </select>
+                <br><br>
+          
+                <div class="slider-container">
+                <label class="amount">Distance:</label>
+                <input class="slider-input" id="distance-input" readonly value="0 km" name="distance_question" />
+                </div>
+                <div class="slider" id="distance"></div>
+                <br/>
+                
+                
+                <div class="slider-container">
+                <label class="amount">Price:</label>
+                <input class="slider-input" id="price-input" readonly value="$0" name="price_question"/>
+                </div>
+                <div class="slider" id="price"></div>
+                <br/>
+               <!-- <input type="submit" value="Submit" /> -->
+            </form>
+       
+            
+        </div>
+          <div class="footer">
+            <button type="submit" id="save-changes">Save</button><button id="reset">Reset</button>
+        </div>
+    
     <!--<nav>-->
     <!--    <ul>-->
     <!--        <li id="filter">Filters</li>-->
@@ -412,20 +451,13 @@ button:hover {
     <!--        <button type="submit" id="save-changes">Save Changes</button><button id="reset">Reset All Filters</button>-->
     <!--    </div>-->
     <!--</div>-->
-    <!--</div>-->
-    <!--<div style="height:200px;"></div>-->
+    </div>
     <div id="map"></div>
-    <!--<br>-->
-    <!--Scan new area-->
-    <!--<br>lat-->
-    <!--<input type="number" name="lat">-->
-    <!--<br>lng-->
-    <!--<input type="number" name="lng">-->
-    <!--<input type="submit">-->
   </body>
 
     <script>
-    var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
+ function initMap() {
+        var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
         var myObject = {{ objects|tojson|safe }}
         myLatLngArray = []
         for (i = 0; i < myObject['places'].length; i++){
@@ -434,16 +466,6 @@ button:hover {
                           {name: myObject['places'][i]['name'], rating: myObject['places'][i]['rating']}]
           myLatLngArray.push(latlngElement)
         }
- function initMap() {
-        // var myLatLng = {lat: 45.4928131, lng: -73.5781163}; // our current latLng
-        // var myObject = {{ objects|tojson|safe }}
-        // myLatLngArray = []
-        // for (i = 0; i < myObject['places'].length; i++){
-        //   // console.log(myObject['places'][i])
-        //   latlngElement = [{lat: myObject['places'][i]['lat'], lng: myObject['places'][i]['lng']},
-        //                   {name: myObject['places'][i]['name'], rating: myObject['places'][i]['rating']}]
-        //   myLatLngArray.push(latlngElement)
-        // }
         console.log(myObject)
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 15,
@@ -796,9 +818,23 @@ button:hover {
         //  heatmapData.push(latLng);
           google.maps.event.addListener(marker, 'click', function() {
              // add the info window here
-            infowindow.setContent(this.title+'<br>Rating: '+(parseFloat(this.rating)*100).toFixed(2)+'%');
+            infowindow.setContent(this.title + "<br>Rating: " + (this.rating*100).toFixed(2)+"%");
             infowindow.open(map, this);
         });
+        //Add listener
+        google.maps.event.addListener(marker, "dblclick", function (event) {
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+             console.log( latitude + ', ' + longitude );
+            var latlng = latitude.toString()+","+longitude.toString()
+            $.ajax({
+              url: "/scan?latlng="+latlng,
+              context: document.body,
+              success: function(){
+                $(this).addClass("done");
+              }
+          });
+        }); //end addListener
         }
         // plot heatmap
         // if
@@ -808,24 +844,10 @@ button:hover {
         //     map: map
         // });
       }
-// function eqfeed_callback(myLatLngArray) {
-//         var heatmapData = [];
-//         for (var i = 0; i < myLatLngArray.length; i++) {
-//           var latLng = new google.maps.LatLng(myLatLngArray[i][0]['lat'], myLatLngArray[i][0]['lng']);
-//             heatmapData.push(latLng);
-//         }
-//         var heatmap = new google.maps.visualization.HeatmapLayer({
-//           data: heatmapData,
-//           dissipating: false,
-//           map: map
-//         });
-//       }
+
     </script>
     <script async defer
-        //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&libraries=visualization&callback=initMap">
-// IMPORTANT need ^libraries visualize in the above URL to do heatmaps
-//src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&callback=initMap">
-    
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcWVmpy1rYS3s9QlO-aMxYP5aHb0yUm0I&callback=initMap">
     </script>
      
 </html>
