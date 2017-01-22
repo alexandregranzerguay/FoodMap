@@ -1,10 +1,19 @@
 import requests
 import json
 import time
+import sqlite3
+
+
 with open("gkey") as f:
 	apikey=f.readlines()[0]
 with open("ckey") as f:
 	cogapikey=f.readlines()[0]
+with open("dbpwd") as f:
+	mysql_password=f.readlines()[0]
+
+
+db = sqlite3.connect('conuhacks')
+db.cursor()
 	
 print apikey
 locationCentre = "45.4581,-73.6403" # where you are...
@@ -44,7 +53,7 @@ def getScores(review_txt_array):
 	print "**************"
 	
 	# print(response.text)
-	return
+	return (score/count)
 
 def getReviews(place_id):
 	url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -58,9 +67,9 @@ def getReviews(place_id):
 		for review in res['result']['reviews']:
 			print review['text']
 		
-		getScores(res['result']['reviews'])
+		return getScores(res['result']['reviews'])
+	return -1
 		
-	return
 
 
 
@@ -83,9 +92,15 @@ for restaurant in res['results']:
 	print "_________________"
 	print restaurant['name']
 	print restaurant['place_id']
-	getReviews(restaurant['place_id'])
+	avg_sentiment = getReviews(restaurant['place_id'])
+	print avg_sentiment
 	print restaurant['geometry']['location']['lat']
 	print restaurant['geometry']['location']['lng']
+	sql_string = "INSERT INTO PLACES (id, lat, lon, name, avg_sentiment_score) VALUES (\"" + str(restaurant['place_id']) +"\", \"" + str(restaurant['geometry']['location']['lat']) + "\", \"" + str(restaurant['geometry']['location']['lng']) + "\", \"" + str(restaurant['name']) + "\", \"" + str(avg_sentiment) + "\")"
+	print sql_string
+	if avg_sentiment != -1:
+		db.execute(sql_string)
+		db.commit()
 
 # if there are more pages of results, cycle through repeating requests to the next page
 while ('next_page_token' in res):
@@ -100,12 +115,18 @@ while ('next_page_token' in res):
 	for restaurant in res['results']:
 		print restaurant['name']
 		print restaurant['place_id']
-		getReviews(restaurant['place_id'])
+		avg_sentiment = getReviews(restaurant['place_id'])
 		print restaurant['geometry']['location']['lat']
 		print restaurant['geometry']['location']['lng']
+
+		sql_string = "INSERT INTO PLACES (id, lat, lon, name, avg_sentiment_score) VALUES (\"" + str(restaurant['place_id']) +"\", \"" + str(restaurant['geometry']['location']['lat']) + "\", \"" + str(restaurant['geometry']['location']['lng']) + "\", \"" + str(restaurant['name']) + "\", \"" + str(avg_sentiment) + "\")"
+		print sql_string
+		if avg_sentiment != -1:
+			db.execute(sql_string)
+			db.commit()
 
 	if ('next_page_token' in res):
 		print(res['next_page_token'])
 
 
-
+db.close()
