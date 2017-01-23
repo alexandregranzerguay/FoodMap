@@ -11,4 +11,4 @@ All of the processing of the data is done with Python and stored in a sqlite dat
 A screenshot of our app, with analyzed restaurants centred in a 2km radius around Concordia University. Red is 0-35% positive sentiment, orange is 35-60%, yellow is 60-80%, and green is above 80%.
 
 ![screenshot](https://github.com/AwesomeTEAMCONU/FoodMap/blob/master/mobilescreenshot.jpg)
-Our app in the wild!
+Our hack in the wild!
