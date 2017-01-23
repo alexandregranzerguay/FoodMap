@@ -12,3 +12,6 @@ A screenshot of our app, with analyzed restaurants centred in a 2km radius aroun
 
 ![screenshot](https://github.com/AwesomeTEAMCONU/FoodMap/blob/master/mobilescreenshot.jpg)
 Our hack in the wild!
+
+![screenshot2](https://github.com/AwesomeTEAMCONU/FoodMap/blob/master/screenshot_2.png)
+Some additional features: filters and a heatmap map overlay
